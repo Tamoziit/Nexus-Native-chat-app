@@ -1,6 +1,8 @@
-import { Text, View } from "react-native";
+import { Image, ScrollView, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { images } from "@/constants/images";
+import Platform from "@/components/Platform";
 
 export default function Index() {
   return (
@@ -12,7 +14,25 @@ export default function Index() {
         end={{ x: 1, y: 1 }}
         className="flex-1"
       >
+        <ScrollView
+          className="flex-1"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            minHeight: "100%",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <View className="items-center justify-center">
+            <Image
+              source={images.Logo}
+              className="w-60 h-60"
+              resizeMode="cover"
+            />
 
+            <Platform />
+          </View>
+        </ScrollView>
       </LinearGradient>
     </SafeAreaView>
   );
