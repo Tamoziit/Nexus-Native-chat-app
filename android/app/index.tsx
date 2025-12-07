@@ -1,4 +1,4 @@
-import { Button, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, Text, TouchableOpacity, View, Dimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "@/constants/images";
@@ -6,6 +6,10 @@ import Platform from "@/components/Platform";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import Typewriter from "@/components/landing/Typewriter";
+import LandingPageAnimation from "@/components/landing/LandingPageAnimation";
+import Footer from "@/components/Footer";
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function Index() {
   return (
@@ -20,34 +24,52 @@ export default function Index() {
         <ScrollView
           className="flex-1"
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            minHeight: "100%",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          pagingEnabled={false}
+          decelerationRate="fast"
+          snapToInterval={SCREEN_HEIGHT}
+          snapToAlignment="start"
         >
-          <View className="absolute top-0 left-0 flex flex-row items-center justify-between py-3 px-5 w-full">
-            <Text className="text-4xl font-bitcount text-accent-500">NEXUS</Text>
+          <View style={{ height: SCREEN_HEIGHT }} className="relative">
+            <View className="absolute top-0 left-0 flex flex-row items-center justify-between py-3 px-5 w-full z-10">
+              <Text className="text-4xl font-bitcount text-accent-500">NEXUS</Text>
+              <TouchableOpacity
+                onPress={() => router.push("/(auth)/Login")}
+                className="p-2"
+              >
+                <MaterialCommunityIcons name="login" size={28} color="#16a34a" />
+              </TouchableOpacity>
+            </View>
 
-            <TouchableOpacity
-              onPress={() => router.push("/(auth)/Login")}
-              className="p-2"
-            >
-              <MaterialCommunityIcons name="login" size={28} color="#16a34a" />
-            </TouchableOpacity>
+            <View className="flex-1 items-center justify-center">
+              <Image
+                source={images.Logo}
+                className="w-60 h-60"
+                resizeMode="cover"
+              />
+              <Platform />
+              <Typewriter />
+            </View>
+
+            <View className="absolute bottom-28 w-full items-center">
+              <MaterialCommunityIcons
+                name="chevron-down"
+                size={40}
+                color="#16a34a"
+                style={{ opacity: 0.6 }}
+              />
+              <Text className="text-accent-500 font-arimo text-sm opacity-60">
+                Explore
+              </Text>
+            </View>
           </View>
 
-          <View className="items-center justify-center">
-            <Image
-              source={images.Logo}
-              className="w-60 h-60"
-              resizeMode="cover"
-            />
-
-            <Platform />
-
-            <Typewriter />
+          <View style={{ height: SCREEN_HEIGHT - 100 }} className="relative px-5 py-4">
+            <View className="items-center bg-black/30 rounded-xl py-6">
+              <LandingPageAnimation />
+            </View>
           </View>
+
+          <Footer />
         </ScrollView>
       </LinearGradient>
     </SafeAreaView>
