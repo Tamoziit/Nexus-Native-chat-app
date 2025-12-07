@@ -1,8 +1,11 @@
-import { Image, ScrollView, Text, View } from "react-native";
+import { Button, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "@/constants/images";
 import Platform from "@/components/Platform";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import Typewriter from "@/components/landing/Typewriter";
 
 export default function Index() {
   return (
@@ -23,6 +26,17 @@ export default function Index() {
             justifyContent: "center",
           }}
         >
+          <View className="absolute top-0 left-0 flex flex-row items-center justify-between py-3 px-5 w-full">
+            <Text className="text-4xl font-bitcount text-accent-500">NEXUS</Text>
+
+            <TouchableOpacity
+              onPress={() => router.push("/(auth)/Login")}
+              className="p-2"
+            >
+              <MaterialCommunityIcons name="login" size={28} color="#16a34a" />
+            </TouchableOpacity>
+          </View>
+
           <View className="items-center justify-center">
             <Image
               source={images.Logo}
@@ -31,6 +45,8 @@ export default function Index() {
             />
 
             <Platform />
+
+            <Typewriter />
           </View>
         </ScrollView>
       </LinearGradient>

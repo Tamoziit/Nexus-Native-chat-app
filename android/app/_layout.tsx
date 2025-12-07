@@ -2,8 +2,16 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import "./globals.css";
 import Toast from "react-native-toast-message";
 import { AuthContextProvider, useAuthContext } from "@/context/AuthContext";
+import { useFonts } from "expo-font";
+import {
+  Arimo_400Regular,
+  Arimo_500Medium,
+  Arimo_600SemiBold,
+  Arimo_700Bold,
+} from "@expo-google-fonts/arimo";
 import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
+import { fonts } from "@/constants/fonts";
 
 function RootNavigation() {
   const { authUser, loading } = useAuthContext();
@@ -28,6 +36,17 @@ function RootNavigation() {
       }
     }
   }, [authUser, loading, segments]);
+
+  const [loaded] = useFonts({
+    "Arimo-Regular": Arimo_400Regular,
+    "Arimo-Medium": Arimo_500Medium,
+    "Arimo-SemiBold": Arimo_600SemiBold,
+    "Arimo-Bold": Arimo_700Bold,
+    "Bitcount-Regular": fonts.Bitcount_Regular,
+    "Bitcount-Bold": fonts.Bitcount_Bold,
+  });
+
+  if (!loaded) return null;
 
   if (loading) {
     return (
