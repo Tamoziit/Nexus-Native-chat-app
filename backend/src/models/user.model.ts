@@ -32,7 +32,13 @@ const UserSchema = new mongoose.Schema({
         type: String,
         enum: ["M", "F", "O"],
         required: true
-    }
+    },
+    chats: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Chat"
+        }
+    ]
 }, { timestamps: true });
 
 const User = mongoose.model("User", UserSchema);
