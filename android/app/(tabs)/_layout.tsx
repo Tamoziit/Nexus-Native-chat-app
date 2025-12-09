@@ -15,7 +15,7 @@ const TabIcon = ({ focused, icon }: TabIconProps) => {
 	} else {
 		return (
 			<View className='w-full h-full justify-center items-center mt-4'>
-				<Image source={icon} tintColor="#0f0f0f" className='size-5' />
+				<Image source={icon} tintColor="#ffffff" className='size-5' />
 			</View>
 		)
 	}
@@ -55,6 +55,64 @@ const _layout = () => {
 							icon={icons.home}
 						/>
 					),
+					headerShown: false,
+				}}
+			/>
+
+			<Tabs.Screen
+				name="Explore"
+				options={{
+					title: 'Explore',
+					tabBarIcon: ({ focused }) => (
+						<TabIcon
+							focused={focused}
+							icon={icons.explore}
+						/>
+					),
+					headerShown: false,
+				}}
+			/>
+
+			<Tabs.Screen
+				name="groups/Groups"
+				options={{
+					title: 'Groups',
+					tabBarIcon: ({ focused }) => (
+						<TabIcon
+							focused={focused}
+							icon={icons.groups}
+						/>
+					),
+					headerShown: false,
+				}}
+			/>
+
+			<Tabs.Screen
+				name="Requests"
+				options={{
+					title: 'Requests',
+					tabBarIcon: ({ focused }) => (
+						<TabIcon
+							focused={focused}
+							icon={icons.requests}
+						/>
+					),
+					headerShown: false,
+				}}
+			/>
+
+			<Tabs.Screen
+				name="chats/[id]"
+				options={{
+					href: null,
+					headerShown: false,
+				}}
+			/>
+
+			<Tabs.Screen
+				name="groups/[id]"
+				options={{
+					href: null,
 					headerShown: false,
 				}}
 			/>
