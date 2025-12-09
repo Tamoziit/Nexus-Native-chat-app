@@ -40,7 +40,7 @@ export default function Index() {
               </TouchableOpacity>
             </View>
 
-            <View className="flex-1 items-center justify-center">
+            <View className="flex-1 items-center justify-center gap-6">
               <Image
                 source={images.Logo}
                 className="w-60 h-60"
@@ -48,6 +48,15 @@ export default function Index() {
               />
               <Platform />
               <Typewriter />
+
+              <View className="mt-4 mb-10">
+                <TouchableOpacity
+                onPress={() => router.push("/(auth)/Signup")}
+                  className="btn-primary py-3 px-12"
+                >
+                  <Text className="text-light-100 font-arimo-bold text-lg">Get Started</Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             <View className="absolute bottom-28 w-full items-center">

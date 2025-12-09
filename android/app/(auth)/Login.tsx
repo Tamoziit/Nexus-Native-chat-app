@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { images } from '@/constants/images';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import useLogin from '@/hooks/useLogin';
+import { router } from 'expo-router';
 
 const Login = () => {
 	const [inputs, setInputs] = useState({
@@ -28,13 +29,13 @@ const Login = () => {
 
 	return (
 		<SafeAreaView className="flex-1 bg-primary">
-      <LinearGradient
-        colors={["#000000", "#000000", "#0f0f0f", "#062612", "#0d4d24", "#16863a"]}
-        locations={[0, 0.3, 0.55, 0.7, 0.9, 1]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        className="flex-1"
-      >
+			<LinearGradient
+				colors={["#000000", "#000000", "#0f0f0f", "#062612", "#0d4d24", "#16863a"]}
+				locations={[0, 0.3, 0.55, 0.7, 0.9, 1]}
+				start={{ x: 0, y: 0 }}
+				end={{ x: 1, y: 1 }}
+				className="flex-1"
+			>
 				<ScrollView
 					className="flex-1 p-5"
 					showsVerticalScrollIndicator={false}
@@ -61,7 +62,7 @@ const Login = () => {
 							</View>
 							<TextInput
 								className="input-primary px-6 py-4 font-arimo"
-								placeholder="Enter your email"
+								placeholder="Enter your mobile number"
 								placeholderTextColor="#6B7280"
 								value={inputs.mobileNo}
 								onChangeText={text => handleInputChange('mobileNo', text)}
@@ -111,6 +112,17 @@ const Login = () => {
 									<Text className="text-xl text-gray-200 font-arimo-bold">Login</Text>
 								)}
 							</TouchableOpacity>
+
+							<View className="flex flex-row items-center gap-1 mt-2">
+								<Text className="text-light-200 font-arimo">
+									Don&apos;t have an account?
+								</Text>
+								<TouchableOpacity onPress={() => router.push("/(auth)/Signup")}>
+									<Text className="text-accent-400 font-arimo-bold">
+										Sign Up
+									</Text>
+								</TouchableOpacity>
+							</View>
 						</View>
 					</View>
 				</ScrollView>
