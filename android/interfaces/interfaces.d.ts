@@ -1,12 +1,26 @@
 import type { ReactNode } from "react";
 
+export interface UserSignupParams {
+    fullName: string;
+    username: string;
+    password: string;
+    mobileNo: string;
+    gender: string;
+}
+
+export interface LoginParams {
+    mobileNo: string;
+    password: string;
+}
+
 export interface AuthUser {
 	_id: string;
-	name: string;
-	email: string;
-	mobileNo: string;
-	gender: "M" | "F" | "O";
-	profilePic?: string | null;
+    fullName: string;
+    username: string;
+    password: string;
+    mobileNo: string;
+    profilePic?: string | null;
+    gender: "M" | "F" | "O";
 }
 
 export interface AuthContextType {
@@ -17,4 +31,9 @@ export interface AuthContextType {
 
 export interface AuthContextProviderProps {
 	children: ReactNode;
+}
+
+export interface TabIconProps {
+    focused: boolean;
+    icon: any;
 }

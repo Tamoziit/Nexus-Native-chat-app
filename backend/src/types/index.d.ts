@@ -8,14 +8,13 @@ export interface AdminToken {
 export interface UserSignupBody {
     fullName: string;
     username: string;
-    email: string;
     password: string;
     mobileNo: string;
     gender: "M" | "F" | "O";
 }
 
 export interface UserLoginBody {
-    email: string;
+    mobileNo: string;
     password: string;
 }
 
@@ -23,11 +22,12 @@ export interface User {
     _id: Types.ObjectId;
     fullName: string;
     username: string;
-    email: string;
     password: string;
     mobileNo: string;
     profilePic?: string | null;
     gender: "M" | "F" | "O";
+    chats: Types.ObjectId[];
+    groups: Types.ObjectId[];
 }
 
 declare module "express" {

@@ -1,0 +1,1 @@
+export const EXPO_API_URL="http://10.253.72.234:5000/api/v1"

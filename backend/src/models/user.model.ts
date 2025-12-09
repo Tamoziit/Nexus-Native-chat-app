@@ -10,10 +10,6 @@ const UserSchema = new mongoose.Schema({
         min: 2,
         required: true
     },
-    email: {
-        type: String,
-        required: true
-    },
     password: {
         type: String,
         min: 6,
@@ -37,6 +33,12 @@ const UserSchema = new mongoose.Schema({
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Chat"
+        }
+    ],
+    groups: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Group"
         }
     ]
 }, { timestamps: true });
