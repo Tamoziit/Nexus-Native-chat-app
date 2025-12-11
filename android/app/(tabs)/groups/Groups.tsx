@@ -1,11 +1,30 @@
+import Header from '@/components/Header';
+import { LinearGradient } from 'expo-linear-gradient';
 import { View, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Groups = () => {
 	return (
-		<View>
-			<Text>Groups</Text>
-		</View>
+		<SafeAreaView className="flex-1 bg-primary">
+			<LinearGradient
+				colors={["#000000", "#000000", "#0f0f0f", "#062612", "#0d4d24", "#16863a"]}
+				locations={[0, 0.3, 0.55, 0.7, 0.9, 1]}
+				start={{ x: 0, y: 0 }}
+				end={{ x: 1, y: 1 }}
+				className="flex-1"
+			>
+				<Header />
+
+				<View className="px-4 pt-6 flex-col w-full items-center justify-center gap-1">
+					<Text className="text-2xl text-light-200 text-center font-arimo-bold">
+						YOUR GROUPS
+					</Text>
+
+					<Text className='text-gray-400 font-arimo-medium'>Together We Vibe!</Text>
+				</View>
+			</LinearGradient>
+		</SafeAreaView>
 	)
 }
 
-export default Groups
+export default Groups;

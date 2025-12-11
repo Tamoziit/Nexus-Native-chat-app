@@ -38,3 +38,7 @@ declare module "express" {
         user?: User;
     }
 }
+
+export interface ExploreIdProps {
+    id: Types.ObjectId;
+}
