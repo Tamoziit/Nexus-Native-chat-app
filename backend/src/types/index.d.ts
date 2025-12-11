@@ -28,6 +28,9 @@ export interface User {
     gender: "M" | "F" | "O";
     chats: Types.ObjectId[];
     groups: Types.ObjectId[];
+    friends: Types.ObjectId[];
+    requests: Types.ObjectId[];
+    invites: Types.ObjectId[];
 }
 
 declare module "express" {

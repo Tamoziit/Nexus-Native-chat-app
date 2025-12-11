@@ -11,7 +11,7 @@
 }
 
 .btn-secondary {
-    @apply border p-1.5 rounded-lg border-light-300;
+    @apply border p-1.5 rounded-lg border-accent-500;
 }
 
 .glassmorphic {

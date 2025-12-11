@@ -40,6 +40,24 @@ const UserSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Group"
         }
+    ],
+    friends: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
+    ],
+    requests: [ // requests user sends
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
+    ],
+    invites: [ // requests user receives
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
     ]
 }, { timestamps: true });
 

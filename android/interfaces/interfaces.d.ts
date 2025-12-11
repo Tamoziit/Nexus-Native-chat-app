@@ -14,7 +14,7 @@ export interface LoginParams {
 }
 
 export interface AuthUser {
-	_id: string;
+    _id: string;
     fullName: string;
     username: string;
     password: string;
@@ -24,16 +24,25 @@ export interface AuthUser {
 }
 
 export interface AuthContextType {
-	authUser: AuthUser | null;
-	setAuthUser: React.Dispatch<React.SetStateAction<AuthUser | null>>;
-	loading: boolean;
+    authUser: AuthUser | null;
+    setAuthUser: React.Dispatch<React.SetStateAction<AuthUser | null>>;
+    loading: boolean;
 }
 
 export interface AuthContextProviderProps {
-	children: ReactNode;
+    children: ReactNode;
 }
 
 export interface TabIconProps {
     focused: boolean;
     icon: any;
+}
+
+export interface Account {
+    _id: string;
+    fullName: string;
+    username: string;
+    mobileNo: string;
+    profilePic?: string | null;
+    gender: "M" | "F" | "O";
 }

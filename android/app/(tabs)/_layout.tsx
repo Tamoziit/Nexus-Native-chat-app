@@ -116,6 +116,14 @@ const _layout = () => {
 					headerShown: false,
 				}}
 			/>
+
+			<Tabs.Screen
+				name="Profile"
+				options={{
+					href: null,
+					headerShown: false,
+				}}
+			/>
 		</Tabs>
 	)
 }
