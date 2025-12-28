@@ -12,11 +12,18 @@ const Explore = () => {
 	const [accounts, setAccounts] = useState<Account[] | null>(null);
 	const { loading, getAccounts } = useExploreAccounts();
 	const insets = useSafeAreaInsets();
+	const [refreshing, setRefreshing] = useState<boolean>(false);
 
 	const fetchAccounts = async () => {
 		const data = await getAccounts();
 		setAccounts(data);
 	}
+
+	const onRefresh = async () => {
+		setRefreshing(true);
+		await fetchAccounts();
+		setRefreshing(false);
+	};
 
 	useEffect(() => {
 		fetchAccounts();
@@ -59,6 +66,8 @@ const Explore = () => {
 						}
 						renderItem={({ item }) => <AccountCard account={item} />}
 						showsVerticalScrollIndicator={false}
+						refreshing={refreshing}
+						onRefresh={onRefresh}
 					/>
 				</View>
 			</LinearGradient>

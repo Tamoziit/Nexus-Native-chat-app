@@ -12,11 +12,18 @@ const Requests = () => {
 	const [friendRequests, setFriendRequests] = useState<Account[] | null>(null);
 	const { loading, getFriendRequests } = useGetFriendRequests();
 	const insets = useSafeAreaInsets();
+	const [refreshing, setRefreshing] = useState<boolean>(false);
 
 	const fetchAccounts = async () => {
 		const data = await getFriendRequests();
 		setFriendRequests(data);
 	}
+
+	const onRefresh = async () => {
+		setRefreshing(true);
+		await fetchAccounts();
+		setRefreshing(false);
+	};
 
 	useEffect(() => {
 		fetchAccounts();
@@ -59,6 +66,8 @@ const Requests = () => {
 						}
 						renderItem={({ item }) => <FriendRequestCard account={item} />}
 						showsVerticalScrollIndicator={false}
+						refreshing={refreshing}
+						onRefresh={onRefresh}
 					/>
 				</View>
 			</LinearGradient>
