@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/user.model";
 import { ExploreIdProps } from "../types";
+import Conversation from "../models/conversation.model";
 
 export const exploreAccounts = async (req: Request, res: Response) => {
     try {
@@ -96,6 +97,10 @@ export const acceptFriendRequest = async (req: Request, res: Response) => {
             return;
         }
 
+        const newConversation = new Conversation({
+            participants: [senderId, acceptorId]
+        });
+
         await Promise.all([
             User.findByIdAndUpdate(acceptorId, {
                 $pull: { invites: senderId },
@@ -106,6 +111,16 @@ export const acceptFriendRequest = async (req: Request, res: Response) => {
                 $pull: { requests: acceptorId },
                 $addToSet: { friends: acceptorId },
             }),
+
+            newConversation.save(),
+
+            User.findByIdAndUpdate(acceptorId, {
+                $addToSet: { chats: newConversation._id },
+            }),
+
+            User.findByIdAndUpdate(senderId, {
+                $addToSet: { chats: newConversation._id },
+            })
         ]);
 
         res.status(200).json({ message: "Friend request accepted" });

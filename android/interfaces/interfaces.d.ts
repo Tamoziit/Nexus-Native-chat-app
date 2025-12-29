@@ -46,3 +46,14 @@ export interface Account {
     profilePic?: string | null;
     gender: "M" | "F" | "O";
 }
+
+export interface Participant {
+    _id: string;
+    username: string;
+    profilePic?: string | null;
+}
+
+export interface Conversation {
+    _id: string;
+    participants: Participant[];
+}
