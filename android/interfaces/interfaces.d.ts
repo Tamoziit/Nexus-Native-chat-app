@@ -50,10 +50,28 @@ export interface Account {
 export interface Participant {
     _id: string;
     username: string;
+    fullName?: string | null;
     profilePic?: string | null;
 }
 
 export interface Conversation {
     _id: string;
     participants: Participant[];
+    latestMessage: {
+        message: string;
+        createdAt: string;
+    }
+}
+
+export interface Chat {
+    sender: string;
+    receiver: string;
+    message: string;
+    createdAt: string;
+}
+
+export interface UserChats {
+    _id: string;
+    participants: Participant[];
+    chats: Chat[];
 }

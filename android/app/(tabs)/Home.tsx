@@ -52,7 +52,7 @@ const Home = () => {
 					<Text className='text-gray-400 font-arimo-medium'>Your vibe. Your people.</Text>
 				</View>
 
-				<View className="flex-1 px-4 z-10">
+				<View className="flex-1 z-10">
 					<FlatList
 						data={conversations}
 						keyExtractor={(item) => item._id.toString()}

@@ -8,6 +8,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 
 import connecToMongoDB from './db/connectToMongoDB';
+import "./models/models";
 import client from './redis/client';
 import adminRoutes from './routes/admin.routes';
 import authRoutes from './routes/auth.routes';

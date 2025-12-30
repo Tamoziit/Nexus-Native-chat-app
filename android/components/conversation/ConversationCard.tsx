@@ -1,7 +1,9 @@
 import { images } from '@/constants/images';
 import { useAuthContext } from '@/context/AuthContext';
 import { Conversation } from '@/interfaces/interfaces';
-import { View, Text, Image } from 'react-native';
+import formatMessageTime from '@/utils/formatMessageTime';
+import { router } from 'expo-router';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 
 interface ConversationCardProps {
 	conversation: Conversation;
@@ -15,7 +17,10 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
 			: null;
 
 	return (
-		<View className='w-full glassmorphic rounded-lg p-3 flex-row items-center justify-between'>
+		<TouchableOpacity
+			onPress={() => router.push(`/(tabs)/chats/${conversation._id}`)}
+			className='w-full glassmorphic-2 py-3 px-6 flex-row items-center justify-between'
+		>
 			<View className='flex-row items-center gap-2'>
 				<Image
 					source={
@@ -23,12 +28,21 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
 							? { uri: friend?.profilePic }
 							: images.placeholder
 					}
-					className='size-20 rounded-full border border-light-300'
+					className='size-16 rounded-full border border-light-300'
 					alt='profile_img'
 					resizeMode='cover'
 				/>
+
+				<View className='flex-col gap-1'>
+					<Text className='text-lg text-accent-300 font-arimo-bold'>{friend?.username}</Text>
+					<Text className='text-gray-400 text-sm font-arimo-semibold'>{conversation.latestMessage.message}</Text>
+				</View>
 			</View>
-		</View>
+
+			<View>
+				<Text className='text-gray-500 text-sm font-arimo-semibold'>{formatMessageTime(conversation.latestMessage.createdAt)}</Text>
+			</View>
+		</TouchableOpacity>
 	)
 }
 

@@ -17,3 +17,7 @@
 .glassmorphic {
     @apply bg-white/5 backdrop-blur-2xl shadow-md border border-accent-500
 }
+
+.glassmorphic-2 {
+    @apply bg-white/5 backdrop-blur-2xl shadow-md border-b border-gray-600
+}
