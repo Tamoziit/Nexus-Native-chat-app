@@ -1,6 +1,7 @@
 import ConversationCard from '@/components/conversation/ConversationCard';
 import DefaultLoader from '@/components/DefaultLoader';
 import Header from '@/components/Header';
+import { useSocketContext } from '@/context/SocketContext';
 import useGetConversations from '@/hooks/useGetConversations';
 import { Conversation } from '@/interfaces/interfaces';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -13,6 +14,7 @@ const Home = () => {
 	const { loading, getConversations } = useGetConversations();
 	const insets = useSafeAreaInsets();
 	const [refreshing, setRefreshing] = useState<boolean>(false);
+	const { onlineUsers } = useSocketContext();
 
 	const fetchAccounts = async () => {
 		const data = await getConversations();

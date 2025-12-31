@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { View, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Header from './Header';
 
 const DefaultLoader = () => {
 	return (
@@ -12,6 +13,8 @@ const DefaultLoader = () => {
 				end={{ x: 1, y: 1 }}
 				className="flex-1"
 			>
+				<Header />
+
 				<View className="flex-1 items-center justify-center">
 					<ActivityIndicator size="large" color="#34d399" />
 				</View>

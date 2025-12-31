@@ -75,3 +75,12 @@ export interface UserChats {
     participants: Participant[];
     chats: Chat[];
 }
+
+export interface SocketContextType {
+    socket: Socket | null;
+    onlineUsers: string[];
+}
+
+export interface SocketProviderProps {
+    children: ReactNode;
+}

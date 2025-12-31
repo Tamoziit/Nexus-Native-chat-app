@@ -12,6 +12,7 @@ import {
 import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { fonts } from "@/constants/fonts";
+import { SocketContextProvider } from "@/context/SocketContext";
 
 function RootNavigation() {
   const { authUser, loading } = useAuthContext();
@@ -73,8 +74,10 @@ function RootNavigation() {
 export default function RootLayout() {
   return (
     <AuthContextProvider>
-      <RootNavigation />
-      <Toast />
+      <SocketContextProvider>
+        <RootNavigation />
+        <Toast />
+      </SocketContextProvider>
     </AuthContextProvider>
   );
 }
