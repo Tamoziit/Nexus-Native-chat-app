@@ -46,8 +46,7 @@ export const getUserChatsById = async (req: Request, res: Response) => {
                 select: "_id username fullName profilePic"
             })
             .populate({
-                path: "chats",
-                options: { sort: { createdAt: -1 } }
+                path: "chats"
             })
             .lean();
 

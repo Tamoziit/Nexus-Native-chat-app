@@ -64,6 +64,7 @@ export interface Conversation {
 }
 
 export interface Chat {
+    _id: string;
     sender: string;
     receiver: string;
     message: string;
@@ -79,8 +80,19 @@ export interface UserChats {
 export interface SocketContextType {
     socket: Socket | null;
     onlineUsers: string[];
+    onlineUsersSet: Set<string>;
 }
 
 export interface SocketProviderProps {
     children: ReactNode;
+}
+
+export interface SendChatProps {
+    conversationId: string;
+    message: string;
+}
+
+export interface SocketMessageProps {
+    conversationId: string;
+    chat: Chat;
 }

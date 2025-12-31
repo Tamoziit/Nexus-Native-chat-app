@@ -16,6 +16,7 @@ import authRoutes from './routes/auth.routes';
 import profileRoutes from "./routes/profile.routes";
 import exploreRoutes from "./routes/explore.routes";
 import conversationRoutes from "./routes/conversation.routes";
+import chatRoutes from "./routes/chat.routes";
 
 const PORT = Number(process.env.PORT) || 3000;
 
@@ -56,6 +57,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/profile', profileRoutes);
 app.use('/api/v1/explore', exploreRoutes);
 app.use('/api/v1/conversations', conversationRoutes);
+app.use('/api/v1/chats', chatRoutes);
 
 server.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Server is running on PORT: ${PORT}`);

@@ -1,11 +1,11 @@
 import ConversationCard from '@/components/conversation/ConversationCard';
 import DefaultLoader from '@/components/DefaultLoader';
 import Header from '@/components/Header';
-import { useSocketContext } from '@/context/SocketContext';
 import useGetConversations from '@/hooks/useGetConversations';
 import { Conversation } from '@/interfaces/interfaces';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -14,7 +14,6 @@ const Home = () => {
 	const { loading, getConversations } = useGetConversations();
 	const insets = useSafeAreaInsets();
 	const [refreshing, setRefreshing] = useState<boolean>(false);
-	const { onlineUsers } = useSocketContext();
 
 	const fetchAccounts = async () => {
 		const data = await getConversations();
@@ -27,9 +26,11 @@ const Home = () => {
 		setRefreshing(false);
 	};
 
-	useEffect(() => {
-		fetchAccounts();
-	}, []);
+	useFocusEffect(
+    useCallback(() => {
+      fetchAccounts();
+    }, [])
+  );
 
 	if (loading || !conversations) {
 		return <DefaultLoader />;
@@ -66,7 +67,11 @@ const Home = () => {
 						ListEmptyComponent={
 							<Text className="text-gray-400 text-center">No accounts found.</Text>
 						}
-						renderItem={({ item }) => <ConversationCard conversation={item} />}
+						renderItem={({ item }) => (
+							<ConversationCard
+								conversation={item}
+							/>
+						)}
 						showsVerticalScrollIndicator={false}
 						refreshing={refreshing}
 						onRefresh={onRefresh}

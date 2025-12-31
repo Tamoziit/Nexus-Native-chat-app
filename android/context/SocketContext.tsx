@@ -1,53 +1,81 @@
-import { createContext, useContext, useEffect, useState, } from "react";
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
 import { io, Socket } from "socket.io-client";
 import { useAuthContext } from "./AuthContext";
 import { EXPO_SOCKET_URL } from "@/configs/env";
-import { SocketContextType, SocketProviderProps } from "@/interfaces/interfaces";
+import {
+    SocketContextType,
+    SocketProviderProps,
+} from "@/interfaces/interfaces";
 
-export const SocketContext = createContext<SocketContextType | undefined>(undefined);
+export const SocketContext =
+    createContext<SocketContextType | undefined>(undefined);
 
 export const useSocketContext = () => {
     const context = useContext(SocketContext);
     if (!context) {
-        throw new Error("useSocketContext must be used within a SocketContextProvider");
+        throw new Error(
+            "useSocketContext must be used within a SocketContextProvider"
+        );
     }
     return context;
 };
 
-export const SocketContextProvider: React.FC<SocketProviderProps> = ({ children }) => {
+export const SocketContextProvider: React.FC<SocketProviderProps> = ({
+    children,
+}) => {
     const { authUser } = useAuthContext();
+
     const [socket, setSocket] = useState<Socket | null>(null);
     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+
     const socketUrl = EXPO_SOCKET_URL;
 
+    // O(1) lookup for online status
+    const onlineUsersSet = useMemo(
+        () => new Set(onlineUsers),
+        [onlineUsers]
+    );
+
     useEffect(() => {
-        if (authUser) {
-            const newSocket = io(socketUrl, {
-                query: {
-                    userId: authUser._id,
-                },
-            });
+        if (!authUser?._id) return;
 
-            setSocket(newSocket);
+        const newSocket = io(socketUrl, {
+            transports: ["websocket"],
+            query: {
+                userId: authUser._id,
+            },
+        });
 
-            newSocket.on("onlineUsers", (users: string[]) => {
-                setOnlineUsers(users);
-            });
+        setSocket(newSocket);
 
-            return () => {
-                newSocket.close();
-                setSocket(null);
-            };
-        } else {
-            if (socket) {
-                socket.close();
-                setSocket(null);
-            }
-        }
-    }, [authUser]);
+        const handleOnlineUsers = (users: string[]) => {
+            setOnlineUsers(users);
+        };
+
+        newSocket.on("onlineUsers", handleOnlineUsers);
+
+        return () => {
+            newSocket.off("onlineUsers", handleOnlineUsers);
+            newSocket.disconnect();
+            setSocket(null);
+            setOnlineUsers([]);
+        };
+    }, [authUser?._id]);
 
     return (
-        <SocketContext.Provider value={{ socket, onlineUsers }}>
+        <SocketContext.Provider
+            value={{
+                socket,
+                onlineUsers,
+                onlineUsersSet,
+            }}
+        >
             {children}
         </SocketContext.Provider>
     );

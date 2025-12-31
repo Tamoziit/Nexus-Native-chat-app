@@ -1,5 +1,6 @@
 import { images } from '@/constants/images';
 import { useAuthContext } from '@/context/AuthContext';
+import { useSocketContext } from '@/context/SocketContext';
 import { Conversation } from '@/interfaces/interfaces';
 import formatMessageTime from '@/utils/formatMessageTime';
 import { router } from 'expo-router';
@@ -15,6 +16,10 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
 		conversation.participants.length === 2
 			? conversation.participants.find(p => p._id !== authUser?._id)
 			: null;
+	const { onlineUsersSet } = useSocketContext();
+	const isOnline = friend
+		? onlineUsersSet.has(friend._id)
+		: false;
 
 	return (
 		<TouchableOpacity
@@ -22,16 +27,21 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
 			className='w-full glassmorphic-2 py-3 px-6 flex-row items-center justify-between'
 		>
 			<View className='flex-row items-center gap-2'>
-				<Image
-					source={
-						friend?.profilePic
-							? { uri: friend?.profilePic }
-							: images.placeholder
-					}
-					className='size-16 rounded-full border border-light-300'
-					alt='profile_img'
-					resizeMode='cover'
-				/>
+				<View>
+					<Image
+						source={
+							friend?.profilePic
+								? { uri: friend?.profilePic }
+								: images.placeholder
+						}
+						className='size-16 rounded-full border border-light-300'
+						alt='profile_img'
+						resizeMode='cover'
+					/>
+					<View
+						className={`${isOnline ? "block" : "hidden"} absolute left-1 -top-1 size-4 rounded-full bg-accent-400`}
+					/>
+				</View>
 
 				<View className='flex-col gap-1'>
 					<Text className='text-lg text-accent-300 font-arimo-bold'>{friend?.username}</Text>
