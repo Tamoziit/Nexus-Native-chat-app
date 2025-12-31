@@ -6,12 +6,20 @@
     @apply text-light-100 rounded-lg border border-green-400 w-full focus:border-2 focus:border-green-300 placeholder:text-gray-500;
 }
 
+.input-secondary {
+    @apply text-light-100 rounded-full bg-black/60 border border-gray-700 focus:border-2 focus:border-gray-500 placeholder:text-gray-500
+}
+
 .btn-primary {
     @apply bg-accent-500 rounded-lg shadow-md active:bg-accent-600;
 }
 
 .btn-secondary {
     @apply border p-1.5 rounded-lg border-accent-500;
+}
+
+.btn-tertiary {
+    @apply bg-accent-300 shadow-md active:bg-accent-400;
 }
 
 .glassmorphic {

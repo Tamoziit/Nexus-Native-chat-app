@@ -106,6 +106,7 @@ const _layout = () => {
 				options={{
 					href: null,
 					headerShown: false,
+					tabBarStyle: { display: "none" }
 				}}
 			/>
 
@@ -114,6 +115,7 @@ const _layout = () => {
 				options={{
 					href: null,
 					headerShown: false,
+					tabBarStyle: { display: "none" }
 				}}
 			/>
 

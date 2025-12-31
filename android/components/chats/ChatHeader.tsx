@@ -1,6 +1,8 @@
 import { images } from '@/constants/images';
 import { Participant } from '@/interfaces/interfaces';
-import { View, Text, Image } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 
 interface ChatHeaderProps {
 	friend: Participant | null;
@@ -26,6 +28,16 @@ const ChatHeader = ({ friend }: ChatHeaderProps) => {
 					<Text className='text-gray-400 text-sm font-arimo-semibold'>{friend?.fullName}</Text>
 				</View>
 			</View>
+
+			<TouchableOpacity
+				onPress={() => router.push('/(tabs)/Home')}
+			>
+				<MaterialCommunityIcons
+					name='arrow-right'
+					size={22}
+					color="#16a34a"
+				/>
+			</TouchableOpacity>
 		</View>
 	)
 }

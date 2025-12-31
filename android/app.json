@@ -20,7 +20,8 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.anonymous.nexus",
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
       "bundler": "metro",
