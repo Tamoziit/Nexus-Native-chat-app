@@ -44,8 +44,20 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
 				</View>
 
 				<View className='flex-col gap-1'>
-					<Text className='text-lg text-accent-300 font-arimo-bold'>{friend?.username}</Text>
-					<Text className='text-gray-400 text-sm font-arimo-semibold'>{conversation.latestMessage.message}</Text>
+					<Text
+						className='text-lg text-accent-300 font-arimo-bold'
+						numberOfLines={1}
+						ellipsizeMode='tail'
+					>
+						{friend?.username}
+					</Text>
+					<Text
+						className='text-gray-400 text-sm font-arimo-semibold'
+						numberOfLines={1}
+						ellipsizeMode='tail'
+					>
+						{conversation.latestMessage.message}
+					</Text>
 				</View>
 			</View>
 

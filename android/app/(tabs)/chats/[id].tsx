@@ -79,8 +79,10 @@ const Chat = () => {
 
 		const chat = await sendMessage({
 			conversationId: userChat._id,
-			message
+			message: message.trim()
 		});
+
+		if (!chat) return;
 		setUserChat((prev) =>
 			prev
 				? { ...prev, chats: [...prev.chats, chat] }
@@ -99,7 +101,7 @@ const Chat = () => {
 			conversationId,
 			chat
 		}: SocketMessageProps) => {
-			if (conversationId !== userChat._id) return;
+			if (conversationId !== userChat._id || !chat) return;
 
 			setUserChat((prev) =>
 				prev
@@ -132,7 +134,7 @@ const Chat = () => {
 						ref={flatListRef}
 						data={userChat.chats}
 						keyExtractor={(item) => item._id.toString()}
-						ItemSeparatorComponent={() => <View className="h-4" />}
+						ItemSeparatorComponent={() => <View className="h-1" />}
 						contentContainerStyle={{
 							marginTop: 10,
 							paddingBottom: 30
