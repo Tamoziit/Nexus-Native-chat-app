@@ -11,9 +11,9 @@ import {
 	ActivityIndicator,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useGetUserChatsById from "@/hooks/useGetUserChatsById";
 import DefaultLoader from "@/components/DefaultLoader";
 import { Participant, SocketMessageProps, UserChats } from "@/interfaces/interfaces";
@@ -22,6 +22,7 @@ import ChatHeader from "@/components/chats/ChatHeader";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import useSendMessage from "@/hooks/useSendMessage";
 import { useSocketContext } from "@/context/SocketContext";
+import ChatBox from "@/components/chats/ChatBox";
 
 const Chat = () => {
 	const [userChat, setUserChat] = useState<UserChats | null>(null);
@@ -33,8 +34,17 @@ const Chat = () => {
 	const [message, setMessage] = useState<string>("");
 	const { loading: sending, sendMessage } = useSendMessage();
 	const { socket } = useSocketContext();
-	const insets = useSafeAreaInsets();
+	const [inputHeight, setInputHeight] = useState(48); // base input height
 	const [refreshing, setRefreshing] = useState<boolean>(false);
+	const flatListRef = useRef<FlatList>(null);
+
+	const MIN_HEIGHT = 48;
+	const MAX_HEIGHT = 120;
+	const borderRadius = inputHeight > 80 ? 16 : 999; // input border radius
+
+	const scrollToEnd = () => {
+		flatListRef.current?.scrollToEnd({ animated: true });
+	};
 
 	const fetchUserChatsById = async () => {
 		const data = (await getUserChatsById(id)) as UserChats;
@@ -50,6 +60,13 @@ const Chat = () => {
 	useEffect(() => {
 		fetchUserChatsById();
 	}, [id]);
+
+	useEffect(() => {
+		if (userChat?.chats.length) {
+			// Small delay to ensure FlatList has rendered
+			setTimeout(scrollToEnd, 100);
+		}
+	}, [userChat?.chats.length]);
 
 	const onRefresh = async () => {
 		setRefreshing(true);
@@ -72,6 +89,7 @@ const Chat = () => {
 
 		Keyboard.dismiss();
 		setMessage("");
+		setTimeout(scrollToEnd, 100);
 	}
 
 	useEffect(() => {
@@ -88,6 +106,8 @@ const Chat = () => {
 					? { ...prev, chats: [...prev.chats, chat] }
 					: prev
 			);
+
+			setTimeout(scrollToEnd, 100);
 		}
 
 		socket.on("newChatMessage", handleNewChat);
@@ -100,53 +120,62 @@ const Chat = () => {
 	if (loading || !userChat) return <DefaultLoader />;
 
 	return (
-		<TouchableWithoutFeedback
-			onPress={Keyboard.dismiss}
-			accessible={false}
-		>
-			<SafeAreaView className="flex-1 bg-primary">
-				<LinearGradient
-					colors={["#000000", "#000000", "#0f0f0f", "#062612", "#0d4d24", "#16863a"]}
-					className="flex-1"
+		<SafeAreaView className="flex-1 bg-primary">
+			<LinearGradient
+				colors={["#000000", "#000000", "#0f0f0f", "#062612", "#0d4d24", "#16863a"]}
+				className="flex-1"
+			>
+				<ChatHeader friend={friend} />
+
+				<View className="flex-1 px-5">
+					<FlatList
+						ref={flatListRef}
+						data={userChat.chats}
+						keyExtractor={(item) => item._id.toString()}
+						ItemSeparatorComponent={() => <View className="h-4" />}
+						contentContainerStyle={{
+							marginTop: 10,
+							paddingBottom: 30
+						}}
+						ListEmptyComponent={
+							<Text className="text-gray-400 text-center">Start Chatting...</Text>
+						}
+						renderItem={({ item }) => <ChatBox chat={item} />}
+						showsVerticalScrollIndicator={false}
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+					/>
+				</View>
+
+				<TouchableWithoutFeedback
+					onPress={Keyboard.dismiss}
+					accessible={false}
 				>
-					<ChatHeader friend={friend} />
-
-					<View className="flex-1 px-4">
-						<FlatList
-							data={userChat.chats}
-							keyExtractor={(item) => item._id.toString()}
-							ItemSeparatorComponent={() => <View className="h-4" />}
-							contentContainerStyle={{
-								marginTop: 10,
-								paddingBottom: Math.max(insets.bottom, 100)
-							}}
-							ListEmptyComponent={
-								<Text className="text-gray-400 text-center">No accounts found.</Text>
-							}
-							renderItem={({ item }) => (
-								<Text className="text-gray-400">
-									{item.sender} : {item.message}
-								</Text>
-							)}
-							showsVerticalScrollIndicator={false}
-							refreshing={refreshing}
-							onRefresh={onRefresh}
-						/>
-					</View>
-
 					<KeyboardAvoidingView
 						behavior={Platform.OS === "android" ? "padding" : "height"}
 						keyboardVerticalOffset={isInputFocused ? 30 : 0}
 					>
 						<View className="px-3 pb-3 w-full flex-row items-center justify-center gap-2">
 							<TextInput
-								className="input-secondary px-6 py-3.5 font-arimo-semibold text-lg w-[85%]"
+								multiline
+								textAlignVertical="top"
 								placeholder="Message..."
 								placeholderTextColor="#6B7280"
-								onFocus={() => setIsInputFocused(true)}
-								onBlur={() => setIsInputFocused(false)}
 								value={message}
-								onChangeText={text => setMessage(text)}
+								onChangeText={setMessage}
+								onContentSizeChange={(e) => {
+									const height = Math.min(
+										MAX_HEIGHT,
+										Math.max(MIN_HEIGHT, e.nativeEvent.contentSize.height)
+									);
+									setInputHeight(height);
+								}}
+								style={{
+									height: inputHeight,
+									borderRadius,
+								}}
+								onFocus={() => setIsInputFocused(true)} onBlur={() => setIsInputFocused(false)}
+								className="input-secondary px-6 py-3.5 font-arimo-semibold text-lg w-[85%]"
 							/>
 
 							<TouchableOpacity
@@ -169,9 +198,9 @@ const Chat = () => {
 							</TouchableOpacity>
 						</View>
 					</KeyboardAvoidingView>
-				</LinearGradient>
-			</SafeAreaView>
-		</TouchableWithoutFeedback>
+				</TouchableWithoutFeedback>
+			</LinearGradient>
+		</SafeAreaView>
 	);
 };
 
