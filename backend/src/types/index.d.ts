@@ -11,6 +11,7 @@ export interface UserSignupBody {
     password: string;
     mobileNo: string;
     gender: "M" | "F" | "O";
+    publicKey: string;
 }
 
 export interface UserLoginBody {
@@ -41,4 +42,9 @@ declare module "express" {
 
 export interface ExploreIdProps {
     id: Types.ObjectId;
+}
+
+export interface MessageProps {
+    cipherText: string;
+    nonce: string;
 }

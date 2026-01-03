@@ -1,12 +1,12 @@
 const getEmojiCount = (text: string) => {
     const cleaned = text.trim();
 
-    // Match all emojis
+    // Matching all emojis
     const emojis = cleaned.match(
         /(\p{Extended_Pictographic}|\p{Emoji_Presentation})/gu
     );
 
-    // If text contains non-emoji chars, reject
+    // Rejecting texts containing non-emoji chars
     const nonEmoji = cleaned.replace(
         /(\p{Extended_Pictographic}|\p{Emoji_Presentation})/gu,
         ''

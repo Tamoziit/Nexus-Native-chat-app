@@ -52,6 +52,7 @@ export interface Participant {
     username: string;
     fullName?: string | null;
     profilePic?: string | null;
+    publicKey?: string | null;
 }
 
 export interface Conversation {
@@ -67,7 +68,8 @@ export interface Chat {
     _id: string;
     sender: string;
     receiver: string;
-    message: string;
+    cipherText: string;
+    nonce: string;
     createdAt: string;
 }
 
@@ -90,6 +92,7 @@ export interface SocketProviderProps {
 export interface SendChatProps {
     conversationId: string;
     message: string;
+    receiverPublicKey: string;
 }
 
 export interface SocketMessageProps {

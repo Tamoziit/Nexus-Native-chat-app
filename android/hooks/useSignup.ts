@@ -5,6 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { EXPO_API_URL } from "@/configs/env";
 import { UserSignupParams } from "@/interfaces/interfaces";
 import cleanUpToken from "@/utils/cleanUpToken";
+import { generateIdentityKeyPair } from "@/utils/crypto";
+import * as SecureStore from 'expo-secure-store';
 
 const useUserSignup = () => {
     const [loading, setLoading] = useState(false);
@@ -28,6 +30,7 @@ const useUserSignup = () => {
 
         if (!success) return;
 
+        const { publicKey, privateKey } = generateIdentityKeyPair();
         const token = await cleanUpToken() as string;
         setLoading(true);
         try {
@@ -43,7 +46,8 @@ const useUserSignup = () => {
                     username,
                     mobileNo,
                     password,
-                    gender
+                    gender,
+                    publicKey
                 })
             });
             const data = await res.json();
@@ -53,6 +57,12 @@ const useUserSignup = () => {
             }
 
             if (data) {
+                await SecureStore.setItemAsync(
+                    'NEMESIS_PRIVATE_IDENTITY_KEY',
+                    privateKey,
+                    { keychainAccessible: SecureStore.AFTER_FIRST_UNLOCK }
+                );
+
                 const now = new Date().getTime();
                 const expiry = now + 30 * 24 * 60 * 60 * 1000;
 

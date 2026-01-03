@@ -3,17 +3,28 @@ import Toast from 'react-native-toast-message';
 import { SendChatProps } from "@/interfaces/interfaces";
 import cleanUpToken from "@/utils/cleanUpToken";
 import { EXPO_API_URL } from "@/configs/env";
+import * as SecureStore from 'expo-secure-store';
+import { deriveSharedSecret, encryptMessage } from "@/utils/crypto";
 
 const useSendMessage = () => {
     const [loading, setLoading] = useState(false);
     const apiUrl = EXPO_API_URL;
 
-    const sendMessage = async ({ conversationId, message }: SendChatProps) => {
-        const success = handleInputErrors({ conversationId, message });
+    const sendMessage = async ({ conversationId, message, receiverPublicKey }: SendChatProps) => {
+        const success = handleInputErrors({ conversationId, message, receiverPublicKey });
 
         if (!success) return;
 
         const token = await cleanUpToken();
+        const myPrivateKey = await SecureStore.getItemAsync('NEMESIS_PRIVATE_IDENTITY_KEY');
+        if (!myPrivateKey) return;
+
+        const sharedSecret = deriveSharedSecret(
+            myPrivateKey,
+            receiverPublicKey
+        );
+        const encryptedMessage = encryptMessage(message, sharedSecret);
+
         setLoading(true);
         try {
             const res = await fetch(`${apiUrl}/chats/send-message/${conversationId}`, {
@@ -23,7 +34,7 @@ const useSendMessage = () => {
                     Accept: "application/json",
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify({ message })
+                body: JSON.stringify(encryptedMessage)
             });
             const data = await res.json();
 
@@ -56,7 +67,7 @@ const useSendMessage = () => {
 export default useSendMessage;
 
 
-function handleInputErrors({ conversationId, message }: SendChatProps) {
+function handleInputErrors({ conversationId, message, receiverPublicKey }: SendChatProps) {
     if (!message) {
         Toast.show({
             type: 'error',
@@ -66,7 +77,7 @@ function handleInputErrors({ conversationId, message }: SendChatProps) {
         return false;
     }
 
-    if (!conversationId) {
+    if (!conversationId || !receiverPublicKey) {
         Toast.show({
             type: 'error',
             text1: "Error in sending message",

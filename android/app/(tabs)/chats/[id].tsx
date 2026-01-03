@@ -75,11 +75,12 @@ const Chat = () => {
 	};
 
 	const handleSendMessage = async () => {
-		if (!userChat) return;
+		if (!userChat || !friend?.publicKey) return;
 
 		const chat = await sendMessage({
 			conversationId: userChat._id,
-			message: message.trim()
+			message: message.trim(),
+			receiverPublicKey: friend.publicKey
 		});
 
 		if (!chat) return;
@@ -120,6 +121,7 @@ const Chat = () => {
 	}, [socket, userChat?._id]);
 
 	if (loading || !userChat) return <DefaultLoader />;
+	//console.log(userChat.chats);
 
 	return (
 		<SafeAreaView className="flex-1 bg-primary">
@@ -142,7 +144,7 @@ const Chat = () => {
 						ListEmptyComponent={
 							<Text className="text-gray-400 text-center">Start Chatting...</Text>
 						}
-						renderItem={({ item }) => <ChatBox chat={item} />}
+						renderItem={({ item }) => <ChatBox chat={item} participants={userChat.participants} />}
 						showsVerticalScrollIndicator={false}
 						refreshing={refreshing}
 						onRefresh={onRefresh}

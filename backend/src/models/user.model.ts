@@ -15,6 +15,14 @@ const UserSchema = new mongoose.Schema({
         min: 6,
         required: true
     },
+    publicKey: {
+        type: String,
+        required: true
+    },
+    keyFingerPrint: {
+        type: String,
+        required: true
+    },
     mobileNo: {
         type: String,
         min: 10,

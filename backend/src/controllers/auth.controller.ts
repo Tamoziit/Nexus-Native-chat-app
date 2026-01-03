@@ -4,6 +4,7 @@ import User from "../models/user.model";
 import bcrypt from "bcryptjs";
 import client from "../redis/client";
 import generateTokenAndSetCookie from "../utils/generateTokenAndSetCookie";
+import crypto from "crypto";
 
 export const signup = async (req: Request, res: Response) => {
 	try {
@@ -12,7 +13,8 @@ export const signup = async (req: Request, res: Response) => {
 			username,
 			password,
 			mobileNo,
-			gender
+			gender,
+			publicKey
 		}: UserSignupBody = req.body;
 
 		if (password.length < 6) {
@@ -29,6 +31,10 @@ export const signup = async (req: Request, res: Response) => {
 		}
 		if (gender !== "M" && gender !== "F" && gender !== "O") {
 			res.status(400).json({ error: "Enter a gender" });
+			return;
+		}
+		if (!publicKey) {
+			res.status(400).json({ error: "Error in Signing up User" });
 			return;
 		}
 
@@ -48,7 +54,12 @@ export const signup = async (req: Request, res: Response) => {
 			username,
 			password: passwordHash,
 			mobileNo,
-			gender
+			gender,
+			publicKey,
+			keyFingerPrint: crypto
+				.createHash('sha256')
+				.update(publicKey)
+				.digest('hex')
 		});
 
 		if (newUser) {

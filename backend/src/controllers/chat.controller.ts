@@ -3,23 +3,20 @@ import Conversation from "../models/conversation.model";
 import Chat from "../models/chat.model";
 import client from "../redis/client";
 import { io } from "../socket/socket";
-
-interface MessageProps {
-    message: string;
-}
+import { MessageProps } from "../types";
 
 export const sendChatMessage = async (req: Request, res: Response) => {
     try {
         const conversationId = req.params.id;
         const senderId = req.user?._id;
-        const { message } = req.body as MessageProps;
+        const { cipherText, nonce } = req.body as MessageProps;
 
         if (!senderId) {
             res.status(400).json({ error: "Cannot fetch Sender ID" });
             return;
         }
 
-        if (!message || !message.trim()) {
+        if (!cipherText || !nonce) {
             res.status(400).json({ error: "Message cannot be empty" });
             return;
         }
@@ -49,7 +46,8 @@ export const sendChatMessage = async (req: Request, res: Response) => {
         const newChat = new Chat({
             sender: senderId,
             receiver: receiverId,
-            message,
+            cipherText,
+            nonce
         });
 
         if (newChat) {

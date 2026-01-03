@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { fonts } from "@/constants/fonts";
 import { SocketContextProvider } from "@/context/SocketContext";
+import "@/utils/naclInit";
 
 function RootNavigation() {
   const { authUser, loading } = useAuthContext();

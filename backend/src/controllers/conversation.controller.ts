@@ -43,7 +43,7 @@ export const getUserChatsById = async (req: Request, res: Response) => {
         const chats = await Conversation.findById(id)
             .populate({
                 path: "participants",
-                select: "_id username fullName profilePic"
+                select: "_id username fullName profilePic publicKey"
             })
             .populate({
                 path: "chats"
