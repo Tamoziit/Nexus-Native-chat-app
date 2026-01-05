@@ -58,10 +58,24 @@ export const SocketContextProvider: React.FC<SocketProviderProps> = ({
             setOnlineUsers(users);
         };
 
+        const handleNewOnlineFriend = ({ userId }: { userId: string }) => {
+            setOnlineUsers(prev =>
+                prev.includes(userId) ? prev : [...prev, userId]
+            );
+        };
+
+        const handleFriendOffline = ({ userId }: { userId: string }) => {
+            setOnlineUsers(prev => prev.filter(id => id !== userId));
+        };
+
         newSocket.on("onlineUsers", handleOnlineUsers);
+        newSocket.on("friendOnline", handleNewOnlineFriend);
+        newSocket.on("friendOffline", handleFriendOffline);
 
         return () => {
             newSocket.off("onlineUsers", handleOnlineUsers);
+            newSocket.off("friendOnline", handleNewOnlineFriend);
+            newSocket.off("friendOffline", handleFriendOffline);
             newSocket.disconnect();
             setSocket(null);
             setOnlineUsers([]);

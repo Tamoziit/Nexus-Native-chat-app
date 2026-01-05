@@ -24,7 +24,6 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
 		? onlineUsersSet.has(friend._id)
 		: false;
 	const [decryptedMessage, setDecryptedMessage] = useState<string | null>(null);
-	console.log(onlineUsersSet)
 
 	useEffect(() => {
 		if (!authUser) return;
