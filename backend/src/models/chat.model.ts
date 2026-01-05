@@ -11,14 +11,22 @@ const ChatSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
-    cipherText: {
+    cipherTextSender: {
         type: String,
         required: true
     },
-    nonce: {
+    nonceSender: {
         type: String,
         required: true
-    }
+    },
+    cipherTextReceiver: {
+        type: String,
+        required: true
+    },
+    nonceReceiver: {
+        type: String,
+        required: true
+    },
 }, { timestamps: true });
 
 const Chat = mongoose.model("Chat", ChatSchema);

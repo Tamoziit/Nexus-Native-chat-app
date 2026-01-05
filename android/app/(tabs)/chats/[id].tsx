@@ -30,6 +30,7 @@ const Chat = () => {
 	const { id } = useLocalSearchParams<{ id: string }>();
 	const { authUser } = useAuthContext();
 	const [friend, setFriend] = useState<Participant | null>(null);
+	const [me, setMe] = useState<Participant | null>(null);
 	const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
 	const [message, setMessage] = useState<string>("");
 	const { loading: sending, sendMessage } = useSendMessage();
@@ -52,9 +53,14 @@ const Chat = () => {
 			data.participants.length === 2
 				? data.participants.find(p => p._id !== authUser?._id) ?? null
 				: null;
+		const meData =
+			data.participants.length === 2
+				? data.participants.find(p => p._id === authUser?._id) ?? null
+				: null;
 
 		setUserChat(data);
 		setFriend(friendData);
+		setMe(meData);
 	}
 
 	useEffect(() => {
@@ -75,12 +81,13 @@ const Chat = () => {
 	};
 
 	const handleSendMessage = async () => {
-		if (!userChat || !friend?.publicKey) return;
+		if (!userChat || !friend?.publicKey || !me?.publicKey) return;
 
 		const chat = await sendMessage({
 			conversationId: userChat._id,
 			message: message.trim(),
-			receiverPublicKey: friend.publicKey
+			receiverPublicKey: friend.publicKey,
+			senderPublicKey: me.publicKey
 		});
 
 		if (!chat) return;
@@ -121,7 +128,6 @@ const Chat = () => {
 	}, [socket, userChat?._id]);
 
 	if (loading || !userChat) return <DefaultLoader />;
-	//console.log(userChat.chats);
 
 	return (
 		<SafeAreaView className="flex-1 bg-primary">

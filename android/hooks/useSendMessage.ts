@@ -4,14 +4,14 @@ import { SendChatProps } from "@/interfaces/interfaces";
 import cleanUpToken from "@/utils/cleanUpToken";
 import { EXPO_API_URL } from "@/configs/env";
 import * as SecureStore from 'expo-secure-store';
-import { deriveSharedSecret, encryptMessage } from "@/utils/crypto";
+import { encryptMessage } from "@/utils/crypto";
 
 const useSendMessage = () => {
     const [loading, setLoading] = useState(false);
     const apiUrl = EXPO_API_URL;
 
-    const sendMessage = async ({ conversationId, message, receiverPublicKey }: SendChatProps) => {
-        const success = handleInputErrors({ conversationId, message, receiverPublicKey });
+    const sendMessage = async ({ conversationId, message, receiverPublicKey, senderPublicKey }: SendChatProps) => {
+        const success = handleInputErrors({ conversationId, message, receiverPublicKey, senderPublicKey });
 
         if (!success) return;
 
@@ -19,11 +19,9 @@ const useSendMessage = () => {
         const myPrivateKey = await SecureStore.getItemAsync('NEMESIS_PRIVATE_IDENTITY_KEY');
         if (!myPrivateKey) return;
 
-        const sharedSecret = deriveSharedSecret(
-            myPrivateKey,
-            receiverPublicKey
-        );
-        const encryptedMessage = encryptMessage(message, sharedSecret);
+        // Double Encryption
+        const encryptedMessageForSender = encryptMessage(myPrivateKey, senderPublicKey, message);
+        const encryptedMessageForReceiver = encryptMessage(myPrivateKey, receiverPublicKey, message);
 
         setLoading(true);
         try {
@@ -34,7 +32,12 @@ const useSendMessage = () => {
                     Accept: "application/json",
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify(encryptedMessage)
+                body: JSON.stringify({
+                    cipherTextSender: encryptedMessageForSender.cipherText,
+                    nonceSender: encryptedMessageForSender.nonce,
+                    cipherTextReceiver: encryptedMessageForReceiver.cipherText,
+                    nonceReceiver: encryptedMessageForReceiver.nonce
+                })
             });
             const data = await res.json();
 
@@ -67,7 +70,7 @@ const useSendMessage = () => {
 export default useSendMessage;
 
 
-function handleInputErrors({ conversationId, message, receiverPublicKey }: SendChatProps) {
+function handleInputErrors({ conversationId, message, receiverPublicKey, senderPublicKey }: SendChatProps) {
     if (!message) {
         Toast.show({
             type: 'error',
@@ -77,7 +80,7 @@ function handleInputErrors({ conversationId, message, receiverPublicKey }: SendC
         return false;
     }
 
-    if (!conversationId || !receiverPublicKey) {
+    if (!conversationId || !receiverPublicKey || !senderPublicKey) {
         Toast.show({
             type: 'error',
             text1: "Error in sending message",

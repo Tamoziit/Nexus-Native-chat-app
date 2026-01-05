@@ -9,14 +9,19 @@ export const sendChatMessage = async (req: Request, res: Response) => {
     try {
         const conversationId = req.params.id;
         const senderId = req.user?._id;
-        const { cipherText, nonce } = req.body as MessageProps;
+        const {
+            cipherTextSender,
+            nonceSender,
+            cipherTextReceiver,
+            nonceReceiver
+        } = req.body as MessageProps;
 
         if (!senderId) {
             res.status(400).json({ error: "Cannot fetch Sender ID" });
             return;
         }
 
-        if (!cipherText || !nonce) {
+        if (!cipherTextSender || !nonceSender || !cipherTextReceiver || !nonceReceiver) {
             res.status(400).json({ error: "Message cannot be empty" });
             return;
         }
@@ -46,8 +51,10 @@ export const sendChatMessage = async (req: Request, res: Response) => {
         const newChat = new Chat({
             sender: senderId,
             receiver: receiverId,
-            cipherText,
-            nonce
+            cipherTextSender,
+            nonceSender,
+            cipherTextReceiver,
+            nonceReceiver
         });
 
         if (newChat) {

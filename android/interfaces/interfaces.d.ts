@@ -68,8 +68,10 @@ export interface Chat {
     _id: string;
     sender: string;
     receiver: string;
-    cipherText: string;
-    nonce: string;
+    cipherTextSender: string;
+    nonceSender: string;
+    cipherTextReceiver: string;
+    nonceReceiver: string;
     createdAt: string;
 }
 
@@ -93,6 +95,7 @@ export interface SendChatProps {
     conversationId: string;
     message: string;
     receiverPublicKey: string;
+    senderPublicKey: string;
 }
 
 export interface SocketMessageProps {

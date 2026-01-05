@@ -45,6 +45,8 @@ export interface ExploreIdProps {
 }
 
 export interface MessageProps {
-    cipherText: string;
-    nonce: string;
+    cipherTextSender: string;
+    nonceSender: string;
+    cipherTextReceiver: string;
+    nonceReceiver: string;
 }

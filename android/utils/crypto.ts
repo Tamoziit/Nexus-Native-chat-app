@@ -10,26 +10,18 @@ export function generateIdentityKeyPair() {
     };
 }
 
-export function deriveSharedSecret(
-    myPrivateKey: string,
-    friendPublicKey: string
-) {
-    return nacl.box.before(
-        naclUtil.decodeBase64(friendPublicKey),
-        naclUtil.decodeBase64(myPrivateKey)
-    );
-}
-
 export function encryptMessage(
-    message: string,
-    sharedSecret: Uint8Array
+    secretKey: string,
+    peerPublicKey: string,
+    message: string
 ) {
-    const nonce = nacl.randomBytes(24);
-    const cipher = nacl.box.after(
+    const nonce = nacl.randomBytes(nacl.box.nonceLength);
+    const cipher = nacl.box(
         naclUtil.decodeUTF8(message),
         nonce,
-        sharedSecret
-    );
+        naclUtil.decodeBase64(peerPublicKey),
+        naclUtil.decodeBase64(secretKey)
+    )
 
     return {
         cipherText: naclUtil.encodeBase64(cipher),
@@ -38,14 +30,16 @@ export function encryptMessage(
 }
 
 export function decryptMessage(
+    secretKey: string,
+    peerPublicKey: string,
     cipherText: string,
-    nonce: string,
-    sharedSecret: Uint8Array
+    nonce: string
 ) {
-    const decrypted = nacl.box.open.after(
+    const decrypted = nacl.box.open(
         naclUtil.decodeBase64(cipherText),
         naclUtil.decodeBase64(nonce),
-        sharedSecret
+        naclUtil.decodeBase64(peerPublicKey),
+        naclUtil.decodeBase64(secretKey)
     );
 
     if (!decrypted) return null;
