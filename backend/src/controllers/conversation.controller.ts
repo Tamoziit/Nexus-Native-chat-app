@@ -8,11 +8,10 @@ export const getUserConversations = async (req: Request, res: Response) => {
         })
             .populate({
                 path: "participants",
-                select: "_id username profilePic"
+                select: "_id username profilePic publicKey"
             })
             .populate({
                 path: "chats",
-                select: "message createdAt",
                 options: { sort: { createdAt: -1 }, limit: 1 }
             })
             .lean();
@@ -27,7 +26,7 @@ export const getUserConversations = async (req: Request, res: Response) => {
             participants: conv.participants,
             latestMessage: conv.chats.length
                 ? conv.chats[0]
-                : { message: "Start a new chat", createdAt: new Date() }
+                : null
         }));
 
         res.status(200).json(result);

@@ -43,7 +43,7 @@ io.on("connection", async (socket) => {
     socket.on("disconnect", async () => {
         if (userId) {
             console.log(`User ${userId} disconnected`);
-            await client.hdel("player_sockets", userId);
+            await client.hdel("ONLINE_USERS", userId);
         }
     });
 });

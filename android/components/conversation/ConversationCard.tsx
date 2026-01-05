@@ -4,7 +4,9 @@ import { useSocketContext } from '@/context/SocketContext';
 import { Conversation } from '@/interfaces/interfaces';
 import formatMessageTime from '@/utils/formatMessageTime';
 import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
+import decryptMessageOnRender from '@/utils/decryptMessageOnRender';
 
 interface ConversationCardProps {
 	conversation: Conversation;
@@ -16,10 +18,36 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
 		conversation.participants.length === 2
 			? conversation.participants.find(p => p._id !== authUser?._id)
 			: null;
+	const isMe = conversation.latestMessage.sender === authUser?._id;
 	const { onlineUsersSet } = useSocketContext();
 	const isOnline = friend
 		? onlineUsersSet.has(friend._id)
 		: false;
+	const [decryptedMessage, setDecryptedMessage] = useState<string | null>(null);
+	console.log(onlineUsersSet)
+
+	useEffect(() => {
+		if (!authUser) return;
+		let mounted = true;
+
+		const run = async () => {
+			const plainText = await decryptMessageOnRender({
+				authUser,
+				isMe,
+				participants: conversation.participants,
+				chat: conversation.latestMessage
+			});
+
+			if (mounted) {
+				setDecryptedMessage(plainText ?? null);
+			}
+		};
+		run();
+
+		return () => {
+			mounted = false;
+		};
+	}, [authUser, isMe, conversation.participants, conversation.latestMessage]);
 
 	return (
 		<TouchableOpacity
@@ -56,7 +84,7 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
 						numberOfLines={1}
 						ellipsizeMode='tail'
 					>
-						{conversation.latestMessage.message}
+						{decryptedMessage ?? '...Error: 🔒 Encrypted...'}
 					</Text>
 				</View>
 			</View>

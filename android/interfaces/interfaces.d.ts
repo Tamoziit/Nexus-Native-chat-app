@@ -55,15 +55,6 @@ export interface Participant {
     publicKey?: string | null;
 }
 
-export interface Conversation {
-    _id: string;
-    participants: Participant[];
-    latestMessage: {
-        message: string;
-        createdAt: string;
-    }
-}
-
 export interface Chat {
     _id: string;
     sender: string;
@@ -73,6 +64,12 @@ export interface Chat {
     cipherTextReceiver: string;
     nonceReceiver: string;
     createdAt: string;
+}
+
+export interface Conversation {
+    _id: string;
+    participants: Participant[];
+    latestMessage: Chat;
 }
 
 export interface UserChats {
@@ -100,5 +97,12 @@ export interface SendChatProps {
 
 export interface SocketMessageProps {
     conversationId: string;
+    chat: Chat;
+}
+
+export interface DecryptMessageProps {
+    authUser: AuthUser,
+    isMe: boolean,
+    participants: Participant[],
     chat: Chat;
 }

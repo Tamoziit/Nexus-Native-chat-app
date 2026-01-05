@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AdminToken } from "../types";
 import jwt from "jsonwebtoken";
+import client from "../redis/client";
 
 export const getToken = async (req: Request, res: Response) => {
 	try {
@@ -20,6 +21,20 @@ export const getToken = async (req: Request, res: Response) => {
 		res.status(200).json(token);
 	} catch (error) {
 		console.log("Error in getting Admin Token", error);
+		res.status(500).json({ error: "Internal Server error" });
+	}
+}
+
+export const flushCache = async (req: Request, res: Response) => {
+	try {
+		await client.del("ONLINE_USERS");
+
+		res.status(200).json({
+			success: true,
+			message: "ONLINE_USERS cache flushed"
+		});
+	} catch (error) {
+		console.log("Error in flushCache controller", error);
 		res.status(500).json({ error: "Internal Server error" });
 	}
 }

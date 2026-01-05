@@ -3,9 +3,8 @@ import { Chat, Participant } from '@/interfaces/interfaces';
 import { View, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import getEmojiCount from '@/utils/isEmojiOnly';
-import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
-import { decryptMessage } from '@/utils/crypto';
+import decryptMessageOnRender from '@/utils/decryptMessageOnRender';
 
 interface ChatProps {
   chat: Chat;
@@ -19,30 +18,27 @@ const ChatBox = ({ chat, participants }: ChatProps) => {
   const [decryptedMessage, setDecryptedMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const decrypt = async () => {
-      const myPrivateKey = await SecureStore.getItemAsync('NEMESIS_PRIVATE_IDENTITY_KEY');
+    if (!authUser) return;
+    let mounted = true;
 
-      if (!myPrivateKey || !authUser) return;
+    const run = async () => {
+      const plainText = await decryptMessageOnRender({
+        authUser,
+        isMe,
+        participants,
+        chat
+      });
 
-      const peerKey = isMe ? (participants.find(p => p._id === authUser?._id)?.publicKey) : (participants.find(p => p._id === chat.sender)?.publicKey);
-
-      if (!peerKey) {
-        console.log("Error: No public key found for user");
-        return;
+      if (mounted) {
+        setDecryptedMessage(plainText ?? null);
       }
-
-      const plainText = decryptMessage(
-        myPrivateKey,
-        peerKey,
-        isMe ? chat.cipherTextSender : chat.cipherTextReceiver,
-        isMe ? chat.nonceSender : chat.nonceReceiver,
-      );
-      console.log(chat.sender, " to ", chat.receiver, " : ", plainText)
-      setDecryptedMessage(plainText);
     };
+    run();
 
-    decrypt();
-  }, [chat._id, authUser?._id, participants]);
+    return () => {
+      mounted = false;
+    };
+  }, [authUser, isMe, participants, chat]);
 
   if (!decryptedMessage) return;
 
