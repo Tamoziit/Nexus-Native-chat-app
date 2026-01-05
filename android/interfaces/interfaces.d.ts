@@ -101,8 +101,16 @@ export interface SocketMessageProps {
 }
 
 export interface DecryptMessageProps {
+    myPrivateKey: string;
     authUser: AuthUser,
     isMe: boolean,
     participants: Participant[],
     chat: Chat;
+}
+
+interface ChatProps {
+    chat: Chat;
+    participants: Participant[];
+    onLayout?: () => void;
+    myPrivateKey: string;
 }

@@ -6,6 +6,7 @@ import formatMessageTime from '@/utils/formatMessageTime';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
+import * as SecureStore from "expo-secure-store";
 import decryptMessageOnRender from '@/utils/decryptMessageOnRender';
 
 interface ConversationCardProps {
@@ -30,7 +31,11 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
 		let mounted = true;
 
 		const run = async () => {
+			const myPrivateKey = await SecureStore.getItemAsync('NEMESIS_PRIVATE_IDENTITY_KEY');
+			if (!myPrivateKey) return;
+
 			const plainText = await decryptMessageOnRender({
+				myPrivateKey,
 				authUser,
 				isMe,
 				participants: conversation.participants,

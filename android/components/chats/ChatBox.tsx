@@ -1,17 +1,12 @@
 import { useAuthContext } from '@/context/AuthContext';
-import { Chat, Participant } from '@/interfaces/interfaces';
 import { View, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import getEmojiCount from '@/utils/isEmojiOnly';
 import { useEffect, useState } from 'react';
 import decryptMessageOnRender from '@/utils/decryptMessageOnRender';
+import { ChatProps } from '@/interfaces/interfaces';
 
-interface ChatProps {
-  chat: Chat;
-  participants: Participant[];
-}
-
-const ChatBox = ({ chat, participants }: ChatProps) => {
+const ChatBox = ({ chat, participants, onLayout, myPrivateKey }: ChatProps) => {
   const { authUser } = useAuthContext();
   const forMe = chat.receiver === authUser?._id;
   const isMe = chat.sender === authUser?._id;
@@ -23,6 +18,7 @@ const ChatBox = ({ chat, participants }: ChatProps) => {
 
     const run = async () => {
       const plainText = await decryptMessageOnRender({
+        myPrivateKey,
         authUser,
         isMe,
         participants,
@@ -47,6 +43,7 @@ const ChatBox = ({ chat, participants }: ChatProps) => {
 
   return (
     <View
+      onLayout={onLayout}
       className={`w-full flex ${forMe ? 'items-start' : 'items-end'
         } my-0.5`}
     >

@@ -23,6 +23,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import useSendMessage from "@/hooks/useSendMessage";
 import { useSocketContext } from "@/context/SocketContext";
 import ChatBox from "@/components/chats/ChatBox";
+import * as SecureStore from 'expo-secure-store';
 
 const Chat = () => {
 	const [userChat, setUserChat] = useState<UserChats | null>(null);
@@ -38,10 +39,19 @@ const Chat = () => {
 	const [inputHeight, setInputHeight] = useState(48); // base input height
 	const [refreshing, setRefreshing] = useState<boolean>(false);
 	const flatListRef = useRef<FlatList>(null);
+	const [myPrivateKey, setMyPrivateKey] = useState<string | null>(null);
 
 	const MIN_HEIGHT = 48;
 	const MAX_HEIGHT = 120;
 	const borderRadius = inputHeight > 80 ? 16 : 999; // input border radius
+
+	useEffect(() => {
+		const loadKey = async () => {
+			const key = await SecureStore.getItemAsync('NEMESIS_PRIVATE_IDENTITY_KEY');
+			setMyPrivateKey(key);
+		};
+		loadKey();
+	}, []);
 
 	const scrollToEnd = () => {
 		flatListRef.current?.scrollToEnd({ animated: true });
@@ -127,7 +137,7 @@ const Chat = () => {
 		};
 	}, [socket, userChat?._id]);
 
-	if (loading || !userChat) return <DefaultLoader />;
+	if (loading || !userChat || !myPrivateKey) return <DefaultLoader />;
 
 	return (
 		<SafeAreaView className="flex-1 bg-primary">
@@ -150,8 +160,15 @@ const Chat = () => {
 						ListEmptyComponent={
 							<Text className="text-gray-400 text-center">Start Chatting...</Text>
 						}
-						renderItem={({ item }) => <ChatBox chat={item} participants={userChat.participants} />}
+						renderItem={({ item, index }) => (
+							<ChatBox
+								chat={item}
+								participants={userChat.participants}
+								onLayout={index === userChat.chats.length - 1 ? scrollToEnd : undefined}
+								myPrivateKey={myPrivateKey}
+							/>)}
 						showsVerticalScrollIndicator={false}
+						//onContentSizeChange={scrollToEnd}
 						refreshing={refreshing}
 						onRefresh={onRefresh}
 					/>
@@ -184,7 +201,8 @@ const Chat = () => {
 									height: inputHeight,
 									borderRadius,
 								}}
-								onFocus={() => setIsInputFocused(true)} onBlur={() => setIsInputFocused(false)}
+								onFocus={() => setIsInputFocused(true)}
+								onBlur={() => setIsInputFocused(false)}
 								className="input-secondary px-6 py-3.5 font-arimo-semibold text-lg w-[85%]"
 							/>
 
