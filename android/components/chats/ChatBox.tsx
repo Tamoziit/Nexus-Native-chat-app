@@ -5,6 +5,7 @@ import getEmojiCount from '@/utils/isEmojiOnly';
 import { useEffect, useState } from 'react';
 import decryptMessageOnRender from '@/utils/decryptMessageOnRender';
 import { ChatProps } from '@/interfaces/interfaces';
+import LinkifiedText from './LinkifiedText';
 
 const ChatBox = ({ chat, participants, onLayout, myPrivateKey }: ChatProps) => {
   const { authUser } = useAuthContext();
@@ -60,12 +61,21 @@ const ChatBox = ({ chat, participants, onLayout, myPrivateKey }: ChatProps) => {
       >
         <Text
           className="text-gray-100 font-arimo-medium"
-          style={{
-            fontSize: isBigEmoji ? 36 : 16,
-            lineHeight: isBigEmoji ? 42 : 22
-          }}
         >
-          {decryptedMessage ?? '...Error: 🔒 Encrypted...'}
+          {LinkifiedText(
+            decryptedMessage,
+            {
+              fontSize: isBigEmoji ? 36 : 16,
+              lineHeight: isBigEmoji ? 42 : 22,
+              color: '#f3f4f6'
+            },
+            {
+              fontSize: isBigEmoji ? 36 : 16,
+              lineHeight: isBigEmoji ? 42 : 22,
+              color: '#bfdbfe',
+              textDecorationLine: 'underline'
+            }
+          ) ?? '...Error: 🔒 Encrypted...'}
         </Text>
       </LinearGradient>
     </View>
