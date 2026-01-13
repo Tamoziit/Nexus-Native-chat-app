@@ -19,7 +19,7 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
 		conversation.participants.length === 2
 			? conversation.participants.find(p => p._id !== authUser?._id)
 			: null;
-	const isMe = conversation.latestMessage.sender === authUser?._id;
+	const isMe = conversation.latestMessage?.sender === authUser?._id;
 	const { onlineUsersSet } = useSocketContext();
 	const isOnline = friend
 		? onlineUsersSet.has(friend._id)
@@ -27,11 +27,11 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
 	const [decryptedMessage, setDecryptedMessage] = useState<string | null>(null);
 
 	useEffect(() => {
-		if (!authUser) return;
+		if (!authUser || !conversation.latestMessage) return;
 		let mounted = true;
 
 		const run = async () => {
-			const myPrivateKey = await SecureStore.getItemAsync('NEMESIS_PRIVATE_IDENTITY_KEY');
+			const myPrivateKey = await SecureStore.getItemAsync(`NEMESIS_PRIVATE_IDENTITY_KEY_${authUser?._id}`);
 			if (!myPrivateKey) return;
 
 			const plainText = await decryptMessageOnRender({
@@ -88,13 +88,18 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
 						numberOfLines={1}
 						ellipsizeMode='tail'
 					>
-						{decryptedMessage ?? '...Error: 🔒 Encrypted...'}
+						{conversation.latestMessage
+							? decryptedMessage ?? '...Error: 🔒Encrypted message...'
+							: 'Start a new chat'}
 					</Text>
 				</View>
 			</View>
 
 			<View>
-				<Text className='text-gray-500 text-sm font-arimo-semibold'>{formatMessageTime(conversation.latestMessage.createdAt)}</Text>
+				<Text className='text-gray-500 text-sm font-arimo-semibold'>{conversation.latestMessage
+					? formatMessageTime(conversation.latestMessage.createdAt)
+					: ''}
+				</Text>
 			</View>
 		</TouchableOpacity>
 	)

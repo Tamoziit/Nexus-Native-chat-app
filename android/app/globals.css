@@ -29,3 +29,11 @@
 .glassmorphic-2 {
     @apply bg-white/5 backdrop-blur-2xl shadow-md border-b border-gray-600
 }
+
+.text-profile-primary {
+    @apply text-accent-300 font-arimo-medium text-lg;
+}
+
+.text-profile-secondary {
+    @apply text-gray-300 font-arimo-semibold text-lg;
+}

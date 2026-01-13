@@ -58,7 +58,7 @@ const useUserSignup = () => {
 
             if (data) {
                 await SecureStore.setItemAsync(
-                    'NEMESIS_PRIVATE_IDENTITY_KEY',
+                    `NEMESIS_PRIVATE_IDENTITY_KEY_${data._id}`,
                     privateKey,
                     { keychainAccessible: SecureStore.AFTER_FIRST_UNLOCK }
                 );

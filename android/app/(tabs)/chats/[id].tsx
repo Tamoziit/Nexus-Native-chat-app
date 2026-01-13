@@ -47,7 +47,7 @@ const Chat = () => {
 
 	useEffect(() => {
 		const loadKey = async () => {
-			const key = await SecureStore.getItemAsync('NEMESIS_PRIVATE_IDENTITY_KEY');
+			const key = await SecureStore.getItemAsync(`NEMESIS_PRIVATE_IDENTITY_KEY_${authUser?._id}`);
 			setMyPrivateKey(key);
 		};
 		loadKey();

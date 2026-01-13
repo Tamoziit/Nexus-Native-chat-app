@@ -5,10 +5,12 @@ import cleanUpToken from "@/utils/cleanUpToken";
 import { EXPO_API_URL } from "@/configs/env";
 import * as SecureStore from 'expo-secure-store';
 import { encryptMessage } from "@/utils/crypto";
+import { useAuthContext } from "@/context/AuthContext";
 
 const useSendMessage = () => {
     const [loading, setLoading] = useState(false);
     const apiUrl = EXPO_API_URL;
+    const { authUser } = useAuthContext();
 
     const sendMessage = async ({ conversationId, message, receiverPublicKey, senderPublicKey }: SendChatProps) => {
         const success = handleInputErrors({ conversationId, message, receiverPublicKey, senderPublicKey });
@@ -16,7 +18,7 @@ const useSendMessage = () => {
         if (!success) return;
 
         const token = await cleanUpToken();
-        const myPrivateKey = await SecureStore.getItemAsync('NEMESIS_PRIVATE_IDENTITY_KEY');
+        const myPrivateKey = await SecureStore.getItemAsync(`NEMESIS_PRIVATE_IDENTITY_KEY_${authUser?._id}`);
         if (!myPrivateKey) return;
 
         // Double Encryption

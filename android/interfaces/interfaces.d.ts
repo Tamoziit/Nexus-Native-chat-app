@@ -17,7 +17,6 @@ export interface AuthUser {
     _id: string;
     fullName: string;
     username: string;
-    password: string;
     mobileNo: string;
     profilePic?: string | null;
     gender: "M" | "F" | "O";
