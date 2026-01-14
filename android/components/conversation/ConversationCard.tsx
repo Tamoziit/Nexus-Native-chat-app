@@ -76,13 +76,21 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
 				</View>
 
 				<View className='flex-col gap-1'>
-					<Text
-						className='text-lg text-accent-300 font-arimo-bold'
-						numberOfLines={1}
-						ellipsizeMode='tail'
-					>
-						{friend?.username}
-					</Text>
+					<View className='flex-row w-full items-center gap-3'>
+						<Text
+							className='text-lg text-accent-300 font-arimo-bold'
+							numberOfLines={1}
+							ellipsizeMode='tail'
+						>
+							{friend?.username}
+						</Text>
+						<View>
+							<Text className='text-gray-500 text-sm font-arimo-semibold'>{conversation.latestMessage
+								? formatMessageTime(conversation.latestMessage.createdAt)
+								: ''}
+							</Text>
+						</View>
+					</View>
 					<Text
 						className='text-gray-400 text-sm font-arimo-semibold'
 						numberOfLines={1}
@@ -93,13 +101,6 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
 							: 'Start a new chat'}
 					</Text>
 				</View>
-			</View>
-
-			<View>
-				<Text className='text-gray-500 text-sm font-arimo-semibold'>{conversation.latestMessage
-					? formatMessageTime(conversation.latestMessage.createdAt)
-					: ''}
-				</Text>
 			</View>
 		</TouchableOpacity>
 	)

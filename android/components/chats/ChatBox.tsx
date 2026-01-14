@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import decryptMessageOnRender from '@/utils/decryptMessageOnRender';
 import { ChatProps } from '@/interfaces/interfaces';
 import LinkifiedText from './LinkifiedText';
+import formatChatTimestamp from '@/utils/formatChatTimestamp';
 
 const ChatBox = ({ chat, participants, onLayout, myPrivateKey }: ChatProps) => {
   const { authUser } = useAuthContext();
@@ -78,6 +79,10 @@ const ChatBox = ({ chat, participants, onLayout, myPrivateKey }: ChatProps) => {
           ) ?? '...Error: 🔒 Encrypted...'}
         </Text>
       </LinearGradient>
+
+      <Text className='text-gray-400 text-xs mt-0.5 ml-2 mr-2'>
+        {formatChatTimestamp(chat.createdAt)}
+      </Text>
     </View>
   );
 };
