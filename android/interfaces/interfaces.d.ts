@@ -113,3 +113,9 @@ interface ChatProps {
     onLayout?: () => void;
     myPrivateKey: string;
 }
+
+export interface CloudinarySignature {
+    timestamp: number;
+    signature: string;
+    api_key: string;
+}
