@@ -2,11 +2,14 @@ const formatChatTimestamp = (createdAt: string | number | Date): string => {
 	const date = new Date(createdAt);
 	const now = new Date();
 
-	const diffMs = now.getTime() - date.getTime();
+	let diffMs = now.getTime() - date.getTime();
+
+	// guard against future / clock skew
+	if (diffMs < 0) diffMs = 0;
+
 	const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
 	const pad = (n: number) => n.toString().padStart(2, "0");
-
 	const time = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 
 	// Today

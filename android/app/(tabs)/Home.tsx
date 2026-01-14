@@ -63,7 +63,6 @@ const Home = () => {
 							marginTop: 30,
 							paddingBottom: Math.max(insets.bottom, 100)
 						}}
-						ItemSeparatorComponent={() => <View className="h-4" />}
 						ListEmptyComponent={
 							<Text className="text-gray-400 text-center">No accounts found.</Text>
 						}
